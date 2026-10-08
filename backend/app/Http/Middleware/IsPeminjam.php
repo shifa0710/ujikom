@@ -10,10 +10,16 @@ class IsPeminjam
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->role === 'peminjam') {
-            return $next($request);
+        // 1. Cek apakah user sudah login
+        if (!auth()->check()) {
+            return redirect()->route('login');
         }
 
-        return response()->json(['message' => 'Akses ditolak. Anda bukan Peminjam.'], 403);
+        // 2. Cek role user (gunakan strtolower untuk menghindari beda kapital misal 'Peminjam' / 'peminjam')
+        if (strtolower(auth()->user()->role) !== 'peminjam') {
+            abort(403, 'Akses ditolak. Anda bukan Peminjam.');
+        }
+
+        return $next($request);
     }
 }

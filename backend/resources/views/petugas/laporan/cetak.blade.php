@@ -27,7 +27,7 @@
     <div class="header">
         <h2>LAPORAN PEMINJAMAN DAN PENGEMBALIAN ALAT</h2>
         <p>Sistem Informasi Manajemen Peminjaman Alat</p>
-        @if($request_status = request('status'))
+        @if(request('dari_tanggal') && request('sampai_tanggal'))
             <p style="font-size: 11px;">Periode: {{ request('dari_tanggal') }} s/d {{ request('sampai_tanggal') }}</p>
         @endif
     </div>
@@ -54,7 +54,7 @@
                     <td>{{ ucfirst($item->status) }}</td>
                     <td>
                         <ul style="margin: 0; padding-left: 15px;">
-                            @foreach($item->detailPinjams as $detail)
+                            @foreach($item->detailPinjam as $detail)
                                 <li>{{ $detail->alat->nama_alat ?? '-' }} ({{ $detail->jumlah }})</li>
                             @endforeach
                         </ul>

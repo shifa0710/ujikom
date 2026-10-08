@@ -62,7 +62,7 @@ class AdminController extends Controller
             'stok' => 'required|integer|min:0',
             'status_kondisi' => 'required|string|max:100',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $data = $request->except('gambar');
@@ -71,8 +71,8 @@ class AdminController extends Controller
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('alat', $filename, 'public');
-            $data['gambar'] = 'storage/alat/' . $filename;
+            $file->move(public_path('images/alat'), $filename);
+            $data['gambar'] = $filename;
         }
 
         Alat::create($data);
@@ -105,7 +105,7 @@ class AdminController extends Controller
             'stok' => 'required|integer|min:0',
             'status_kondisi' => 'required|string|max:100',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $data = $request->except('gambar');
@@ -120,8 +120,8 @@ class AdminController extends Controller
 
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('alat', $filename, 'public');
-            $data['gambar'] = 'storage/alat/' . $filename;
+            $file->move(public_path('images/alat'), $filename);
+            $data['gambar'] = $filename;
         }
 
         $alat->update($data);
@@ -523,6 +523,7 @@ class AdminController extends Controller
 
         return redirect()->route('admin.user.index')->with('success', 'User berhasil dihapus.');
     }
+    
 
     // CRUD KATEGORI
     public function indexKategori(Request $request)

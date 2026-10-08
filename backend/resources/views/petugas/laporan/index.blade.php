@@ -21,20 +21,20 @@
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-600 mb-1">Dari Tanggal (Pinjam):</label>
-                <input type="date" name="dari_tanggal" value="{{ request('dari_tanggal') }}"
-                       class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500">
+                <input type="date" name="dari_tanggal" value="{{ request('dari_tanggal') }}" 
+                    class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-600 mb-1">Sampai Tanggal (Pinjam):</label>
-                <input type="date" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}"
-                       class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500">
+                <input type="date" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}" 
+                    class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500">
             </div>
             <div class="flex space-x-2">
                 <button type="submit" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 text-sm font-semibold rounded-lg transition shadow-sm">
                     Filter
                 </button>
-                <a href="{{ route('petugas.laporan.index') }}"
-                   class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 py-2 text-sm rounded-lg transition flex items-center justify-center">
+                <a href="{{ route('petugas.laporan.index') }}" 
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 py-2 text-sm rounded-lg transition flex items-center justify-center">
                     Reset
                 </a>
             </div>
@@ -45,8 +45,8 @@
     <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
         <div class="p-5 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
             <h3 class="text-lg font-bold text-gray-800">Hasil Rekap Laporan</h3>
-            <a href="{{ route('petugas.laporan.cetak', request()->all()) }}" target="_blank"
-               class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-sm font-semibold rounded-lg transition shadow-sm flex items-center space-x-2">
+            <a href="{{ route('petugas.laporan.cetak', request()->all()) }}" target="_blank" 
+                class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-sm font-semibold rounded-lg transition shadow-sm flex items-center space-x-2">
                 <span>Cetak / Print Laporan</span>
             </a>
         </div>
@@ -72,7 +72,7 @@
                             <td class="py-3 px-4 border-b">{{ $item->tgl_pinjam }}</td>
                             <td class="py-3 px-4 border-b">{{ $item->tgl_kembali_plan }}</td>
                             <td class="py-3 px-4 border-b">
-                                <span class="px-2.5 py-1 rounded text-xs font-semibold
+                                <span class="px-2.5 py-1 rounded text-xs font-semibold 
                                     {{ $item->status == 'selesai' ? 'bg-emerald-100 text-emerald-700' : '' }}
                                     {{ $item->status == 'dipinjam' ? 'bg-blue-100 text-blue-700' : '' }}
                                     {{ $item->status == 'telat' ? 'bg-red-100 text-red-700' : '' }}
@@ -82,7 +82,7 @@
                             </td>
                             <td class="py-3 px-4 border-b">
                                 <ul class="list-disc list-inside space-y-1 text-xs">
-                                    @foreach($item->detailPinjams as $detail)
+                                    @foreach($item->detailPinjam as $detail)
                                         <li>{{ $detail->alat->nama_alat ?? '-' }} ({{ $detail->jumlah }})</li>
                                     @endforeach
                                 </ul>

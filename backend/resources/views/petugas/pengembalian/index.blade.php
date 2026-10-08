@@ -20,13 +20,13 @@
             <h3 class="text-lg font-bold text-gray-800">Daftar Peminjaman Aktif (Belum Kembali)</h3>
             <form action="{{ route('petugas.pengembalian.index') }}" method="GET" class="flex w-full md:w-80">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama peminjam..."
-                       class="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 text-sm font-semibold rounded-r-lg transition">
                     Cari
                 </button>
                 @if(request('search'))
                     <a href="{{ route('petugas.pengembalian.index') }}"
-                       class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 py-2 text-sm rounded-lg flex items-center transition">
+                        class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 py-2 text-sm rounded-lg flex items-center transition">
                         Reset
                     </a>
                 @endif
@@ -60,7 +60,7 @@
                             </td>
                             <td class="py-3 px-4 border-b">
                                 <ul class="list-disc list-inside space-y-1 text-xs">
-                                    @foreach($item->detailPinjams as $detail)
+                                    @foreach($item->detailPinjam as $detail)
                                         <li>
                                             <span class="font-semibold">{{ $detail->alat->nama_alat ?? 'Alat Dihapus' }}</span>
                                             (Jumlah: {{ $detail->jumlah }})
@@ -70,8 +70,8 @@
                             </td>
                             <td class="py-3 px-4 border-b text-center">
                                 <!-- Form Proses Pengembalian -->
-                                <form action="{{ route('petugas.pengembalian.proses', $item->id) }}" method="POST"
-                                      class="inline-block bg-gray-50 p-3 rounded border border-gray-200 text-left space-y-2">
+                                <form action="{{ route('petugas.pengembalian.proses', $item->id) }}" method="POST" 
+                                    class="inline-block bg-gray-50 p-3 rounded border border-gray-200 text-left space-y-2">
                                     @csrf
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600 mb-1">Kondisi Kembali:</label>
@@ -83,11 +83,11 @@
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600 mb-1">Denda (Rp):</label>
-                                        <input type="number" name="denda" value="0" placeholder="0"
-                                               class="w-full text-xs border border-gray-300 rounded px-2 py-1 focus:ring-emerald-500 focus:border-emerald-500">
+                                        <input type="number" name="denda" value="0" placeholder="0" 
+                                            class="w-full text-xs border border-gray-300 rounded px-2 py-1 focus:ring-emerald-500 focus:border-emerald-500">
                                     </div>
-                                    <button type="submit" onclick="return confirm('Proses pengembalian alat ini?')"
-                                            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-xs font-semibold transition shadow-sm">
+                                    <button type="submit" onclick="return confirm('Proses pengembalian alat ini?')" 
+                                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-xs font-semibold transition shadow-sm">
                                         Terima Pengembalian
                                     </button>
                                 </form>

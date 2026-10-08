@@ -27,14 +27,10 @@ class Peminjaman extends Model
     }
 
     public function detailPinjam(): HasMany {
-        return $this->hasMany(DetailPinjam::class);
-    }
-
-    public function detailPinjams(): HasMany {
-        return $this->hasMany(DetailPinjam::class);
+        return $this->hasMany(DetailPinjam::class, 'peminjaman_id');
     }
 
     public function pengembalian(): HasOne {
-        return $this->hasOne(Pengembalian::class);
+        return $this->hasOne(Pengembalian::class, 'peminjaman_id');
     }
 }

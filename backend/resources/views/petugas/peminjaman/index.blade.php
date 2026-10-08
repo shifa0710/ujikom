@@ -16,7 +16,7 @@
     @endif
 
     <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-        <div class="p-5 border-b border-gray-200 bg-gray-50">
+        <div class="p-5 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
             <h3 class="text-lg font-bold text-gray-800">Menunggu Verifikasi Persetujuan</h3>
             <form action="{{ route('petugas.peminjaman.index') }}" method="GET" class="flex w-full md:w-80">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama peminjam..."
@@ -54,12 +54,30 @@
                             <td class="py-3 px-4 border-b">{{ $item->tgl_kembali_plan }}</td>
                             <td class="py-3 px-4 border-b">
                                 <ul class="list-disc list-inside space-y-1 text-xs">
-                                    @foreach($item->detailPinjams as $detail)
-                                        <li>
-                                            <span class="font-semibold">{{ $detail->alat->nama_alat ?? 'Alat Dihapus' }}</span>
-                                            (Jumlah: {{ $detail->jumlah }})
-                                        </li>
-                                    @endforeach
+                                    @if($item->detailPinjam && count($item->detailPinjam) > 0)
+                                        @foreach($item->detailPinjam as $detail)
+                                            <li>
+                                                <span class="font-semibold">{{ $detail->alat->nama_alat ?? 'Alat Dihapus' }}</span>
+                                                (Jumlah: {{ $detail->jumlah }})
+                                            </li>
+                                        @endforeach
+                                    @elseif($item->detailPinjams && count($item->detailPinjams) > 0)
+                                        @foreach($item->detailPinjams as $detail)
+                                            <li>
+                                                <span class="font-semibold">{{ $detail->alat->nama_alat ?? 'Alat Dihapus' }}</span>
+                                                (Jumlah: {{ $detail->jumlah }})
+                                            </li>
+                                        @endforeach
+                                    @elseif($item->detailPeminjaman && count($item->detailPeminjaman) > 0)
+                                        @foreach($item->detailPeminjaman as $detail)
+                                            <li>
+                                                <span class="font-semibold">{{ $detail->alat->nama_alat ?? 'Alat Dihapus' }}</span>
+                                                (Jumlah: {{ $detail->jumlah }})
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li class="text-gray-400 italic">Tidak ada detail alat</li>
+                                    @endif
                                 </ul>
                             </td>
                             <td class="py-3 px-4 border-b text-center">

@@ -53,9 +53,9 @@
                 <tbody class="text-gray-700 text-sm">
                     @forelse($alats as $alat)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="py-3 px-4 border-b">
+                           <td class="py-3 px-4 border-b">
                                 @if($alat->gambar)
-                                    <img src="{{ asset('storage/alat/' . $alat->gambar) }}" alt="{{ $alat->nama_alat }}" class="w-12 h-12 object-cover rounded-lg border">
+                                 <img src="{{ asset('images/alat/' . $alat->gambar) }}" alt="{{ $alat->nama_alat }}" class="w-12 h-12 object-cover rounded-lg border">
                                 @else
                                     <span class="text-xs text-gray-400 italic">Tidak ada</span>
                                 @endif

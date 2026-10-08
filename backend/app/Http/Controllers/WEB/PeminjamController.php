@@ -18,36 +18,45 @@ class PeminjamController extends Controller
         return view('peminjam.katalog', compact('alats'));
     }
 
-
     public function ajukanPeminjaman(Request $request)
     {
+        // 1. Validasi input dengan pesan penjelas
         $request->validate([
-            'tgl_kembali_pinjam' => 'required|date|after:today',
-            'alat_id' => 'required|array',
-            'jumlah' => 'required|array',
+            'tgl_kembali_plan' => 'required|date',
+            'alat_id'          => 'required|array|min:1',
+            'jumlah'           => 'required|array',
+        ], [
+            'tgl_kembali_plan.required' => 'Tanggal rencana pengembalian wajib diisi.',
+            'alat_id.required'          => 'Pilih minimal satu alat untuk dipinjam.',
+            'alat_id.min'               => 'Pilih minimal satu alat untuk dipinjam.',
         ]);
 
         DB::beginTransaction();
         try {
-            // Buat header peminjaman
+            // 2. Buat header peminjaman
             $peminjaman = Peminjaman::create([
-                'user_id' => auth()->id(),
-                'tgl_pinjam' => now(),
-                'tgl_kembali_pinjam' => $request->tgl_kembali_pinjam,
-                'status' => 'diajukan',
+                'user_id'          => auth()->id(),
+                'tgl_pinjam'       => now()->toDateString(),
+                'tgl_kembali_plan' => $request->tgl_kembali_plan,
+                'status'           => 'diajukan',
             ]);
 
-            // Masukkan daftar alat yang dipinjam ke detail_pinjam
-            foreach ($request->alat_id as $index => $alatId) {
+            // 3. Masukkan daftar alat yang dipinjam ke detail_pinjam
+            foreach ($request->alat_id as $alatId) {
+                $jumlahPinjam = $request->jumlah[$alatId] ?? 1;
+
                 DetailPinjam::create([
                     'peminjaman_id' => $peminjaman->id,
-                    'alat_id' => $alatId,
-                    'jumlah' => $request->jumlah[$index],
+                    'alat_id'       => $alatId,
+                    'jumlah'        => $jumlahPinjam,
                 ]);
             }
 
             DB::commit();
-            return redirect()->route('peminjam.riwayat')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
+
+            // Direct khusus menggunakan route name lengkap
+            return redirect()->route('peminjam.riwayat')->with('success', 'Peminjaman berhasil diajukan!');
+
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Gagal mengajukan peminjaman: ' . $e->getMessage());
