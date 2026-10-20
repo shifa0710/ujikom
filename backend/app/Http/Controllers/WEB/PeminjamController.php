@@ -11,16 +11,17 @@ use Illuminate\Support\Facades\DB;
 
 class PeminjamController extends Controller
 {
-    // Melihat daftar/katalog alat yang tersedia
+    // Melihat daftar/katalog alat yang stoknya masih tersedia
     public function katalogAlat()
     {
         $alats = Alat::with('kategori')->where('stok', '>', 0)->get();
         return view('peminjam.katalog', compact('alats'));
     }
 
+    // Function untuk memproses pengajuan peminjaman alat oleh siswa/peminjam
     public function ajukanPeminjaman(Request $request)
     {
-        // 1. Validasi input dengan pesan penjelas
+       // 1. Validasi input: Tanggal kembali dan minimal satu alat harus dipilih beserta pesan penjelas
         $request->validate([
             'tgl_kembali_plan' => 'required|date',
             'alat_id'          => 'required|array|min:1',
@@ -31,9 +32,10 @@ class PeminjamController extends Controller
             'alat_id.min'               => 'Pilih minimal satu alat untuk dipinjam.',
         ]);
 
+        // Menggunakan Database Transaction agar data tersimpan aman secara utuh
         DB::beginTransaction();
         try {
-            // 2. Buat header peminjaman
+            // 2. Buat data header utama peminjaman (status awal otomatis 'diajukan')
             $peminjaman = Peminjaman::create([
                 'user_id'          => auth()->id(),
                 'tgl_pinjam'       => now()->toDateString(),
@@ -41,7 +43,7 @@ class PeminjamController extends Controller
                 'status'           => 'diajukan',
             ]);
 
-            // 3. Masukkan daftar alat yang dipinjam ke detail_pinjam
+           // 3. Masukkan daftar alat yang dipilih ke tabel relasi 'detail_pinjam'
             foreach ($request->alat_id as $alatId) {
                 $jumlahPinjam = $request->jumlah[$alatId] ?? 1;
 
@@ -52,9 +54,10 @@ class PeminjamController extends Controller
                 ]);
             }
 
+            // Jika semua berhasil, simpan permanen ke database
             DB::commit();
 
-            // Direct khusus menggunakan route name lengkap
+            // Redirect langsung ke halaman riwayat peminjaman beserta pesan sukses
             return redirect()->route('peminjam.riwayat')->with('success', 'Peminjaman berhasil diajukan!');
 
         } catch (\Exception $e) {
@@ -63,7 +66,7 @@ class PeminjamController extends Controller
         }
     }
 
-    // Melihat riwayat peminjaman user yang sedang login
+    // Function untuk menampilkan riwayat status peminjaman milik user yang sedang login
     public function riwayatPeminjaman()
     {
         $peminjamans = Peminjaman::with('detailPinjam.alat')

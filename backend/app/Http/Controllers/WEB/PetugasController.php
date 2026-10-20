@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
 use App\Models\Pengembalian;
 use App\Models\Alat;
-use App\Models\LogAktivitas; // Perbaikan Typo Model LogAktivitas
+use App\Models\LogAktivitas; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -31,7 +31,7 @@ class PetugasController extends Controller
         return view('petugas.peminjaman.index', compact('peminjamans', 'search'));
     }
 
-    // Menyetujui Peminjaman (Mengubah status & mengurangi stok alat)
+    // Menyetujui Peminjaman (Mengubah status menjadi 'dipinjam' & mengurangi stok alat secara otomatis)
     public function setujuiPeminjaman($id)
     {
         DB::beginTransaction();
@@ -39,7 +39,7 @@ class PetugasController extends Controller
             $peminjaman = Peminjaman::with('detailPinjam')->findOrFail($id);
             $peminjaman->update(['status' => 'dipinjam']);
 
-            // Kurangi stok alat secara otomatis
+            // Kurangi stok alat secara otomatis berdasarkan jumlah detail pinjam
             foreach ($peminjaman->detailPinjam as $detail) {
                 $alat = Alat::findOrFail($detail->alat_id);
                 $alat->stok -= $detail->jumlah;
@@ -165,7 +165,7 @@ class PetugasController extends Controller
                 'denda'           => $request->input('denda', 0),
             ]);
 
-            // Kembalikan stok alat secara otomatis
+            // Kembalikan stok alat secara otomatis ke database
             foreach ($peminjaman->detailPinjam as $detail) {
                 $alat = Alat::findOrFail($detail->alat_id);
                 $alat->stok += $detail->jumlah;

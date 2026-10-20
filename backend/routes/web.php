@@ -2,63 +2,71 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WEB\AuthController;
-use App\Http\Controllers\WEB\AdminController;
 use App\Http\Controllers\WEB\PetugasController;
 use App\Http\Controllers\WEB\PeminjamController;
 
+use App\Http\Controllers\WEB\Admin\DashboardController;
+use App\Http\Controllers\WEB\Admin\UserController;
+use App\Http\Controllers\WEB\Admin\KategoriController;
+use App\Http\Controllers\WEB\Admin\AlatController;
+use App\Http\Controllers\WEB\Admin\PeminjamanAdminController;
+use App\Http\Controllers\WEB\Admin\PengembalianAdminController;
+
+// Halaman Utama Aplikasi
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Route Tamu (Belum Login)
+// Route Tamu (Hanya bisa dibuka oleh user yang BELUM LOGIN)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 });
 
-// Admin
+// Route Khusus ADMIN (Diproteksi Login & Role Admin)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-
-    // CRUD Alat
-    Route::get('/alat', [AdminController::class, 'indexAlat'])->name('alat.index');
-    Route::get('/alat/create', [AdminController::class, 'createAlat'])->name('alat.create');
-    Route::post('/alat', [AdminController::class, 'storeAlat'])->name('alat.store');
-    Route::get('/alat/{id}/edit', [AdminController::class, 'editAlat'])->name('alat.edit');
-    Route::put('/alat/{id}', [AdminController::class, 'updateAlat'])->name('alat.update');
-    Route::delete('/alat/{id}', [AdminController::class, 'destroyAlat'])->name('alat.destroy');
-
-    // CRUD Peminjaman
-    Route::get('/peminjaman', [AdminController::class, 'indexPeminjaman'])->name('peminjaman.index');
-    Route::get('/peminjaman/create', [AdminController::class, 'createPeminjaman'])->name('peminjaman.create');
-    Route::post('/peminjaman', [AdminController::class, 'storePeminjaman'])->name('peminjaman.store');
-    Route::put('/peminjaman/{id}/status', [AdminController::class, 'updateStatusPeminjaman'])->name('peminjaman.updateStatus');
-    Route::delete('/peminjaman/{id}', [AdminController::class, 'destroyPeminjaman'])->name('peminjaman.destroy');
-
-    // CRUD Pengembalian
-    Route::get('/pengembalian', [AdminController::class, 'indexPengembalian'])->name('pengembalian.index');
-    Route::get('/pengembalian/create', [AdminController::class, 'createPengembalian'])->name('pengembalian.create');
-    Route::post('/pengembalian', [AdminController::class, 'storePengembalian'])->name('pengembalian.store');
-    Route::delete('/pengembalian/{id}', [AdminController::class, 'destroyPengembalian'])->name('pengembalian.destroy');
+    // Dashboard Admin
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // CRUD User
-    Route::get('/users', [AdminController::class, 'indexUser'])->name('user.index');
-    Route::get('/users/create', [AdminController::class, 'createUser'])->name('user.create');
-    Route::post('/users', [AdminController::class, 'storeUsers'])->name('user.store');
-    Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('user.edit');
-    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('user.update');
-    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('user.destroy');
+    Route::get('/users', [UserController::class, 'indexUser'])->name('user.index');
+    Route::get('/users/create', [UserController::class, 'createUser'])->name('user.create');
+    Route::post('/users', [UserController::class, 'storeUsers'])->name('user.store');
+    Route::get('/users/{id}/edit', [UserController::class, 'editUser'])->name('user.edit');
+    Route::put('/users/{id}', [UserController::class, 'updateUser'])->name('user.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroyUser'])->name('user.destroy');
 
     // CRUD Kategori
-    Route::get('/kategori', [AdminController::class, 'indexKategori'])->name('kategori.index');
-    Route::get('/kategori/create', [AdminController::class, 'createKategori'])->name('kategori.create');
-    Route::post('/kategori', [AdminController::class, 'storeKategori'])->name('kategori.store');
-    Route::get('/kategori/{id}/edit', [AdminController::class, 'editKategori'])->name('kategori.edit');
-    Route::put('/kategori/{id}', [AdminController::class, 'updateKategori'])->name('kategori.update');
-    Route::delete('/kategori/{id}', [AdminController::class, 'destroyKategori'])->name('kategori.destroy');
+    Route::get('/kategori', [KategoriController::class, 'indexKategori'])->name('kategori.index');
+    Route::get('/kategori/create', [KategoriController::class, 'createKategori'])->name('kategori.create');
+    Route::post('/kategori', [KategoriController::class, 'storeKategori'])->name('kategori.store');
+    Route::get('/kategori/{id}/edit', [KategoriController::class, 'editKategori'])->name('kategori.edit');
+    Route::put('/kategori/{id}', [KategoriController::class, 'updateKategori'])->name('kategori.update');
+    Route::delete('/kategori/{id}', [KategoriController::class, 'destroyKategori'])->name('kategori.destroy');
+
+    // CRUD Alat
+    Route::get('/alat', [AlatController::class, 'indexAlat'])->name('alat.index');
+    Route::get('/alat/create', [AlatController::class, 'createAlat'])->name('alat.create');
+    Route::post('/alat', [AlatController::class, 'storeAlat'])->name('alat.store');
+    Route::get('/alat/{id}/edit', [AlatController::class, 'editAlat'])->name('alat.edit');
+    Route::put('/alat/{id}', [AlatController::class, 'updateAlat'])->name('alat.update');
+    Route::delete('/alat/{id}', [AlatController::class, 'destroyAlat'])->name('alat.destroy');
+
+    // CRUD Peminjaman
+    Route::get('/peminjaman', [PeminjamanAdminController::class, 'indexPeminjaman'])->name('peminjaman.index');
+    Route::get('/peminjaman/create', [PeminjamanAdminController::class, 'createPeminjaman'])->name('peminjaman.create');
+    Route::post('/peminjaman', [PeminjamanAdminController::class, 'storePeminjaman'])->name('peminjaman.store');
+    Route::put('/peminjaman/{id}/status', [PeminjamanAdminController::class, 'updateStatusPeminjaman'])->name('peminjaman.updateStatus');
+    Route::delete('/peminjaman/{id}', [PeminjamanAdminController::class, 'destroyPeminjaman'])->name('peminjaman.destroy');
+
+    // CRUD Pengembalian
+    Route::get('/pengembalian', [PengembalianAdminController::class, 'indexPengembalian'])->name('pengembalian.index');
+    Route::get('/pengembalian/create', [PengembalianAdminController::class, 'createPengembalian'])->name('pengembalian.create');
+    Route::post('/pengembalian', [PengembalianAdminController::class, 'storePengembalian'])->name('pengembalian.store');
+    Route::delete('/pengembalian/{id}', [PengembalianAdminController::class, 'destroyPengembalian'])->name('pengembalian.destroy');
 });
 
-// Petugas
+// Route Khusus PETUGAS (Diproteksi Login & Role Petugas/Admin)
 Route::middleware(['auth', 'role:petugas,admin'])->prefix('petugas')->name('petugas.')->group(function () {
     // Peminjaman & Persetujuan
     Route::get('/peminjaman', [PetugasController::class, 'indexPeminjaman'])->name('peminjaman.index');
@@ -74,13 +82,13 @@ Route::middleware(['auth', 'role:petugas,admin'])->prefix('petugas')->name('petu
     Route::get('/laporan/cetak', [PetugasController::class, 'cetakLaporan'])->name('laporan.cetak');
 });
 
-// Peminjam
+// Route Khusus PEMINJAM / SISWA (Diproteksi Login & Role Peminjam)
 Route::middleware(['auth', 'role:peminjam'])->prefix('peminjam')->name('peminjam.')->group(function () {
-    // Katalog & Pengajuan
+    // Katalog & Pengajuan Peminjaman
     Route::get('/katalog', [PeminjamController::class, 'katalogAlat'])->name('katalog');
     Route::post('/peminjaman/ajukan', [PeminjamController::class, 'ajukanPeminjaman'])->name('peminjaman.ajukan');
     Route::get('/riwayat', [PeminjamController::class, 'riwayatPeminjaman'])->name('riwayat');
 });
 
-// Route Logout
+// Route Logout (Hanya untuk User yang SUDAH LOGIN)
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
