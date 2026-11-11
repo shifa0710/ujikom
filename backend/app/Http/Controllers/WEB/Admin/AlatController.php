@@ -125,6 +125,13 @@ class AlatController extends Controller
     public function destroyAlat($id)
     {
         $alat = Alat::findOrFail($id);
+
+            // Cek tabel detail_pinjam: Apakah alat ini masih punya riwayat dipinjam?
+            if ($alat->detailPinjam()->count() > 0) {
+                return redirect()->route('admin.alat.index')
+                    ->with('error', 'Alat tidak bisa dihapus karena masih terkait dengan data peminjaman!');
+            }
+
         $namaAlat = $alat->nama_alat; // FIX: Simpan nama alat sebelum di-delete
 
         // Hapus file gambar fisik dari storage jika ada

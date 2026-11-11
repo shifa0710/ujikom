@@ -108,6 +108,12 @@ class UserController extends Controller
         // 1. Cari user berdasarkan ID
         $user = User::findOrFail($id);
         
+        // Cek apakah user masih punya data peminjaman
+    if ($user->peminjaman()->count() > 0) {
+        return redirect()->route('admin.user.index')
+            ->with('error', 'User tidak bisa dihapus karena masih terkait dengan data peminjaman!');
+    }
+
         $namaUser = $user->name; // Simpan nama user sebelum di-delete
 
         // 2. Hapus data user dari database

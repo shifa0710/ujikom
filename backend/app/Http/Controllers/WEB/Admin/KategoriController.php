@@ -84,6 +84,13 @@ class KategoriController extends Controller
     public function destroyKategori($id)
     {
         $kategori = Kategori::findOrFail($id);
+
+        // Cek apakah kategori masih digunakan oleh alat
+        if ($kategori->alat()->count() > 0) {
+            return redirect()->route('admin.kategori.index')
+                ->with('error', 'Kategori tidak bisa dihapus karena masih digunakan oleh data alat!');
+        }
+
         $namaKategori = $kategori->nama_kategori; // FIX: Simpan nama kategori sebelum di-delete
 
         if ($kategori->alat()->count() > 0) {

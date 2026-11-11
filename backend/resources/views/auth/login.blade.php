@@ -13,6 +13,13 @@
     <div class="bg-white p-8 rounded-lg shadow-md w-96">
         <h3 class="text-2xl font-bold text-center text-gray-800 mb-6">Login Sistem</h3>
 
+        <!-- Alert Sukses -->
+        @if(session('success'))
+            <div class="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-lg text-sm text-center">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <!-- Alert Error Session -->
         @if(session('error'))
             <div class="mb-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
@@ -53,6 +60,14 @@
                 class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition duration-200">
                 Masuk
             </button>
+
+            <!-- Link ke Halaman Register -->
+            <div class="text-center mt-3">
+                <p class="mb-0 text-sm text-gray-600">
+                    Belum punya akun? 
+                    <a href="{{ route('register') }}" class="text-blue-600 font-semibold hover:underline">Daftar</a>
+                </p>
+            </div>
         </form>
     </div>
 

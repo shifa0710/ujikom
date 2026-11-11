@@ -148,6 +148,12 @@ class PeminjamanAdminController extends Controller
     public function destroyPeminjaman($id)
     {
         $peminjaman = Peminjaman::with('detailPinjam.alat')->findOrFail($id);
+
+        // Cek apakah peminjaman masih aktif atau belum dikembalikan
+        if ($peminjaman->status == 'dipinjam' || $peminjaman->detailPinjam()->count() > 0) {
+            return redirect()->route('admin.peminjaman.index')
+                ->with('error', 'Data peminjaman tidak bisa dihapus karena transaksi masih aktif atau memiliki detail item!');
+        }
         $peminjamanId = $peminjaman->id; // FIX: Ambil ID peminjaman ke variabel sebelum delete
 
         // Jika statusnya sedang dipinjam, kembalikan stok terlebih dahulu sebelum dihapus

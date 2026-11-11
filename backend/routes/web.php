@@ -14,14 +14,15 @@ use App\Http\Controllers\WEB\Admin\PengembalianAdminController;
 
 // Halaman Utama Aplikasi
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('register');
 });
 
-// Route Tamu (Hanya bisa dibuka oleh user yang BELUM LOGIN)
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-});
+// Route untuk Register
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+
+// Route Login
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
 // Route Khusus ADMIN (Diproteksi Login & Role Admin)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -88,6 +89,11 @@ Route::middleware(['auth', 'role:peminjam'])->prefix('peminjam')->name('peminjam
     Route::get('/katalog', [PeminjamController::class, 'katalogAlat'])->name('katalog');
     Route::post('/peminjaman/ajukan', [PeminjamController::class, 'ajukanPeminjaman'])->name('peminjaman.ajukan');
     Route::get('/riwayat', [PeminjamController::class, 'riwayatPeminjaman'])->name('riwayat');
+});
+
+// Route Tamu (Hanya bisa dibuka oleh user yang BELUM LOGIN)
+Route::middleware('guest')->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
 // Route Logout (Hanya untuk User yang SUDAH LOGIN)

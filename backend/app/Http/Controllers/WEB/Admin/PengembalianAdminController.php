@@ -106,6 +106,13 @@ class PengembalianAdminController extends Controller
     public function destroyPengembalian($id)
     {
         $pengembalian = Pengembalian::findOrFail($id);
+
+        // Cek apakah peminjamannya sudah selesai (kalau sudah, gak boleh dihapus)
+            if ($pengembalian->peminjaman && $pengembalian->peminjaman->status == 'selesai') {
+            return redirect()->route('admin.pengembalian.index')
+                ->with('error', 'Data pengembalian tidak bisa dihapus karena transaksi peminjaman sudah dinyatakan selesai!');
+        }
+
         $pengembalianId = $pengembalian->id;
         
         $pengembalian->delete();
